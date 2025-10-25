@@ -63,6 +63,17 @@ function updateMap(lat, lon) {
   map.setView([lat, lon]);
 }
 
+function getTotalScore(){
+    return parseFloat(localStorage.getItem('totalScore')) || 0;
+}
+
+function updateTotalScore(newPoints){
+    const current = getTotalScore();
+    const updated = current+newPoints;
+    localStorage.setItem('totalScore', updated.toFixed(2));
+    return updated;
+}
+
 // ---------------- Start Journey ----------------
 document.getElementById('startBtn').addEventListener('click', () => {
   if (!navigator.geolocation) {
