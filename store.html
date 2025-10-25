@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Store - Journey Tracker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <div class="header-content">
+    <h1>Welcome to the Store</h1>
+    <p>Spend your points to unlock rewards!</p>
+  </div>
+</header>
+
+<main>
+  <!-- Points Display -->
+  <div class="points-card">
+    <h2>Your Points: <span id="userPoints">0</span></h2>
+  </div>
+
+  <!-- Store Items -->
+  <div class="items">
+    <div class="item">
+      <h3>Reward 1</h3>
+      <p>Cost: 10 points</p>
+      <button id="item1Btn">Buy</button>
+    </div>
+    <div class="item">
+      <h3>Reward 2</h3>
+      <p>Cost: 20 points</p>
+      <button id="item2Btn">Buy</button>
+    </div>
+    <div class="item">
+      <h3>Reward 3</h3>
+      <p>Cost: 30 points</p>
+      <button id="item3Btn">Buy</button>
+    </div>
+  </div>
+</main>
+
+<script>
+  // Get points from localStorage
+  let userPoints = parseInt(localStorage.getItem('userPoints')) || 0;
+  document.getElementById('userPoints').innerText = userPoints;
+
+  // Handle item purchase actions
+  document.getElementById('item1Btn').addEventListener('click', () => {
+    if (userPoints >= 10) {
+      userPoints -= 10;
+      localStorage.setItem('userPoints', userPoints);
+      document.getElementById('userPoints').innerText = userPoints;
+      alert('You bought Reward 1!');
+    } else {
+      alert('Not enough points to buy Reward 1.');
+    }
+  });
+
+  document.getElementById('item2Btn').addEventListener('click', () => {
+    if (userPoints >= 20) {
+      userPoints -= 20;
+      localStorage.setItem('userPoints', userPoints);
+      document.getElementById('userPoints').innerText = userPoints;
+      alert('You bought Reward 2!');
+    } else {
+      alert('Not enough points to buy Reward 2.');
+    }
+  });
+
+  document.getElementById('item3Btn').addEventListener('click', () => {
+    if (userPoints >= 30) {
+      userPoints -= 30;
+      localStorage.setItem('userPoints', userPoints);
+      document.getElementById('userPoints').innerText = userPoints;
+      alert('You bought Reward 3!');
+    } else {
+      alert('Not enough points to buy Reward 3.');
+    }
+  });
+</script>
+
+</body>
+</html>
