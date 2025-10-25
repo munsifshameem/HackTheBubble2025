@@ -128,7 +128,7 @@ main {
 }
 
 /* ---------------- Cards ---------------- */
-.distance-card {
+.distance-card, .inventory-card {
   background: white;
   padding: 25px 50px;
   border-radius: 20px;
@@ -140,7 +140,7 @@ main {
   text-align: center;
 }
 
-.distance-card:hover {
+.distance-card:hover, .inventory-card:hover {
   transform: translateY(-4px);
 }
 
@@ -167,21 +167,64 @@ main {
   transform: scale(1.01);
 }
 
+/* ---------------- Shop Grid ---------------- */
+.shop-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  width: 90%;
+  max-width: 1000px;
+  margin: 30px auto;
+}
+
+.item-card {
+  background: white;
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.item-name { font-weight: 700; color:#1f2937; font-size:1.1rem; }
+.item-desc { font-size:0.95rem; color:#4b5563; min-height:38px; }
+.item-price { font-weight:700; color:#2575fc; }
+.buy-btn {
+  padding: 10px 18px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  background: linear-gradient(90deg,#10b981,#06b6d4);
+  color:white;
+  transition: transform .15s ease;
+}
+.buy-btn[disabled] { opacity:0.45; cursor:not-allowed; transform:none; }
+.buy-btn:active:not([disabled]) { transform: translateY(1px); }
+
+/* ---------------- Inventory & Garden ---------------- */
+#inventory ul { list-style:none; padding:0; }
+#inventory li { margin:12px 0; font-size:1.1rem; display:flex; gap:10px; align-items:center; }
+.planted-seed {
+  display:inline-block;
+  padding:6px 10px;
+  background:#10b981;
+  color:white;
+  border-radius:6px;
+  margin:4px;
+  font-weight:600;
+  font-size:0.95rem;
+}
+
+#garden { margin-top:20px; display:flex; flex-wrap:wrap; gap:6px; justify-content:center; }
+
 /* ---------------- Responsive ---------------- */
-@media (max-width: 768px) {
-  header h1 {
-    font-size: 2.2rem;
-  }
-  .btn {
-    padding: 12px 25px;
-    font-size: 1rem;
-  }
-  .distance-card {
-    font-size: 1.2rem;
-    padding: 15px 25px;
-  }
-  #map {
-    height: 55vh;
-    width: 95%;
-  }
+@media(max-width:768px){
+  header h1 { font-size:2.2rem; }
+  .btn { padding:12px 25px; font-size:1rem; }
+  .distance-card, .inventory-card { font-size:1.2rem; padding:15px 25px; }
+  #map { height:55vh; width:95%; }
 }

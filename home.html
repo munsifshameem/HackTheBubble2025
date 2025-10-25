@@ -1,70 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Home</title>
-  <link rel="stylesheet" href="style.css">
-  <style>
-    /* Simple styles for garden items */
-    #garden {
-      width: 90%;
-      height: 300px;
-      margin: 20px auto;
-      background: #a8e6cf; /* light green grass background */
-      position: relative;
-      border-radius: 15px;
-      overflow: hidden;
-    }
-    .grass {
-      position: absolute;
-      width: 3px;
-      background: #2ecc71;
-      bottom: 0;
-    }
-    .flower {
-      position: absolute;
-      width: 10px;
-      height: 10px;
-      background: pink;
-      border-radius: 50%;
-      bottom: 0;
-    }
-    .tree {
-      position: absolute;
-      width: 20px;
-      height: 50px;
-      background: #8b4513; /* tree trunk */
-      border-radius: 4px;
-      bottom: 0;
-    }
-    .tree::after {
-      content: '';
-      position: absolute;
-      width: 40px;
-      height: 40px;
-      background: green;
-      border-radius: 50%;
-      left: -10px;
-      top: -30px;
-    }
-    .butterfly {
-      position: absolute;
-      width: 10px;
-      height: 10px;
-      background: purple;
-      border-radius: 50%;
-      animation: fly 4s infinite alternate;
-    }
-    @keyframes fly {
-      0% { transform: translateY(0) translateX(0); }
-      100% { transform: translateY(-50px) translateX(50px); }
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Journey Tracker - Home</title>
+<link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-<!-- Navigation -->
 <nav class="navbar">
   <div class="logo">Journey Tracker</div>
   <ul class="nav-links">
@@ -74,52 +17,68 @@
   </ul>
 </nav>
 
-<!-- Header -->
 <header>
   <div class="header-content">
     <h1>Welcome Back!</h1>
-    <p>View your total score and start your next adventure.</p>
+    <p>View your total score and manage your garden.</p>
   </div>
 </header>
 
-<!-- Main content -->
-<main style="text-align:center; padding: 50px;">
-  <h2>Your Total Score:</h2>
-  <p id="totalScore" style="font-size: 2rem; font-weight: bold; color: #2575fc;">0</p>
-
-  <h2>My Garden:</h2>
-  <div id="garden">
-    <!-- Garden items will appear here -->
+<main style="width:90%; max-width:1000px; margin-top:30px;">
+  <div class="inventory-card">
+    <h2>Total Score: <span id="totalScore">0</span></h2>
+    <div id="inventory">
+      <h3>Your Seeds</h3>
+      <ul>
+        <li>Sunflower: <span class="count">0</span> <button class="plant" data-seed="sunflower">Plant</button></li>
+        <li>Basil: <span class="count">0</span> <button class="plant" data-seed="basil">Plant</button></li>
+        <li>Olive: <span class="count">0</span> <button class="plant" data-seed="olive">Plant</button></li>
+      </ul>
+    </div>
+    <div id="garden">
+      <h3>Garden</h3>
+      <div id="plantedSeeds"></div>
+    </div>
   </div>
 </main>
 
-<!-- Scripts -->
-<script src="garden.js"></script>
 <script>
-  // Update score function
-  const updateScore = () => {
-    const savedScore = localStorage.getItem('totalScore') || 0;
-    document.getElementById('totalScore').textContent = parseFloat(savedScore).toFixed(2);
-  };
+function getInventory(){ return JSON.parse(localStorage.getItem('inventory')||'{}'); }
+function getTotalScore(){ return parseFloat(localStorage.getItem('totalScore'))||0; }
+function setInventory(inv){ localStorage.setItem('inventory', JSON.stringify(inv)); }
+function setTotalScore(val){ localStorage.setItem('totalScore', val.toFixed(2)); }
 
-  // Update score when page loads
-  updateScore();
+function updateInventoryUI(){
+  const inv = getInventory();
+  document.querySelectorAll('#inventory li').forEach(li=>{
+    const seed = li.querySelector('.plant').dataset.seed;
+    const qty = inv[seed]||0;
+    li.querySelector('.count').textContent = qty;
+    li.querySelector('.plant').disabled = qty<=0;
+  });
+  document.getElementById('totalScore').textContent = getTotalScore().toFixed(2);
+}
 
-  // Listen for changes in localStorage
-  window.addEventListener('storage', updateScore);
+function plantSeed(seedName){
+  const inv = getInventory();
+  if((inv[seedName]||0)<=0) return;
+  inv[seedName]-=1;
+  setInventory(inv);
 
-  // Load user inventory from localStorage
-  let inventory = JSON.parse(localStorage.getItem('inventory' )) || {
-    grass: true,      // everyone starts with grass
-    flowers: 0,
-    trees: 0,
-    butterflies: 0
-  };
+  const div = document.createElement('div');
+  div.textContent = seedName;
+  div.className = 'planted-seed';
+  document.getElementById('plantedSeeds').appendChild(div);
 
-  // Generate garden based on inventory
-  if (typeof generateGarden === 'function') {
-    generateGarden(inventory);
-  }
+  updateInventoryUI();
+}
+
+document.querySelectorAll('#inventory .plant').forEach(btn=>{
+  btn.addEventListener('click',()=>plantSeed(btn.dataset.seed));
+});
+
+// Initialize garden and inventory
+updateInventoryUI();
 </script>
 
 </body>

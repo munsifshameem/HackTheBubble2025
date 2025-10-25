@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shop</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Shop</title>
+<link rel="stylesheet" href="style.css"/>
 </head>
 <body>
 
@@ -20,29 +20,76 @@
 <header>
   <div class="header-content">
     <h1>Shop</h1>
-    <p>Spend your journey points on cool rewards (coming soon!)</p>
+    <p>Spend your journey points on seeds to grow in your garden.</p>
   </div>
 </header>
 
-<main style="text-align:center; padding:50px;">
-  <h2>Your Points:</h2>
-  <p id="shopScore" style="font-size:2rem; font-weight:bold; color:#2575fc;">0</p>
+<main>
+  <div class="shop-header">
+    <h2>Your Points:</h2>
+    <p id="shopScore" style="font-size:2rem; font-weight:bold; color:#2575fc;">0</p>
+    <p class="notice" id="noticeInsufficient">Not enough points for that purchase.</p>
+  </div>
+
+  <div class="shop-grid">
+    <div class="item-card">
+      <div class="item-name">Sunflower Seed</div>
+      <div class="item-desc">Bright starter seed.</div>
+      <div class="item-price" data-price="0.01">Price: 0.01 pts</div>
+      <button class="buy-btn" data-price="0.01">Buy Sunflower</button>
+    </div>
+
+    <div class="item-card">
+      <div class="item-name">Basil Seed</div>
+      <div class="item-desc">Aromatic herb.</div>
+      <div class="item-price" data-price="12.5">Price: 12.5 pts</div>
+      <button class="buy-btn" data-price="12.5">Buy Basil</button>
+    </div>
+
+    <div class="item-card">
+      <div class="item-name">Olive Seed</div>
+      <div class="item-desc">Premium long-term seed.</div>
+      <div class="item-price" data-price="30">Price: 30 pts</div>
+      <button class="buy-btn" data-price="30">Buy Olive</button>
+    </div>
+  </div>
 </main>
 
 <script>
-  // Update score initially
-  const updateScore = () => {
-    const savedScore = localStorage.getItem('totalScore') || 0;
-    document.getElementById('shopScore').textContent = parseFloat(savedScore).toFixed(2);
-  };
+function getTotalScore(){ return parseFloat(localStorage.getItem('totalScore'))||0; }
+function setTotalScore(val){ localStorage.setItem('totalScore', Math.max(0,val).toFixed(2)); }
+function getInventory(){ return JSON.parse(localStorage.getItem('inventory')||'{}'); }
+function setInventory(inv){ localStorage.setItem('inventory', JSON.stringify(inv)); }
 
-  // Update score when page loads
-  updateScore();
+const shopScoreEl = document.getElementById('shopScore');
+const noticeEl = document.getElementById('noticeInsufficient');
+const buyButtons = Array.from(document.querySelectorAll('.buy-btn'));
 
-  // Listen for changes in localStorage
-  window.addEventListener('storage', updateScore);
+function refreshUI(){
+  const total = getTotalScore();
+  shopScoreEl.textContent = total.toFixed(2);
+  buyButtons.forEach(btn=>{ btn.disabled = total<parseFloat(btn.dataset.price); });
+  noticeEl.style.display='none';
+}
+
+function purchase(price,itemName){
+  const total=getTotalScore();
+  if(total<price){ noticeEl.style.display='block'; return; }
+  setTotalScore(total-price);
+  const inv=getInventory();
+  const key=itemName.toLowerCase().split(' ')[0];
+  inv[key]=(inv[key]||0)+1;
+  setInventory(inv);
+  alert(`Purchased ${itemName}!\nRemaining points: ${getTotalScore().toFixed(2)}`);
+  refreshUI();
+}
+
+buyButtons.forEach(btn=>{
+  btn.addEventListener('click',()=> purchase(parseFloat(btn.dataset.price), btn.closest('.item-card').querySelector('.item-name').textContent));
+});
+
+window.addEventListener('storage', refreshUI);
+refreshUI();
 </script>
-
 </body>
 </html>
-
