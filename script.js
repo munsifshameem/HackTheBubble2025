@@ -27,6 +27,7 @@ function stopTimer() {
   clearInterval(timerInterval);
 }
 
+
 // Map setup
 const map = L.map('map').setView([56.3398, -2.7967], 13);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
