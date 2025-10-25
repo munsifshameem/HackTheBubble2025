@@ -92,24 +92,36 @@ document.getElementById('startBtn').addEventListener('click', () => {
     { enableHighAccuracy: true, maximumAge: 1000, timeout: 5000 }
   );
 });
-
-// Stop Journey
 document.getElementById('stopBtn').addEventListener('click', () => {
   if (watchId) {
     navigator.geolocation.clearWatch(watchId);
     watchId = null;
   }
 
+  // Stop any timer (if you have one)
   stopTimer();
 
-  // Show summary before resetting
-  alert(`Journey stopped.\nTotal distance: ${distance.toFixed(2)} meters\nTime: ${document.getElementById('timer').innerText.split(' ')[1]}`);
+  // Show journey summary before reset
+  const elapsed = document.getElementById('timer')?.innerText.split(' ')[1] || '0s';
+  alert(`Journey stopped.\nTotal distance: ${distance.toFixed(2)} meters\nTime: ${elapsed}`);
 
-  // Reset values
+  // Send distance to backend for points
+  fetch('http://127.0.0.1:5000/score', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ distance: distance })
+  })
+  .then(res => res.json())
+  .then(data => {
+    alert(`You earned ${data.points.toFixed(1)} points!`);
+  })
+  .catch(err => console.error(err));
+
+  // Reset values for next journey
   distance = 0;
   elapsedTime = 0;
   startTime = 0;
-  updateTimerDisplay();
+  updateTimerDisplay?.(); // if you have a function to update timer display
   document.getElementById('distance').innerText = `Distance: 0 m`;
 
   // Clear path & map visuals
@@ -118,4 +130,3 @@ document.getElementById('stopBtn').addEventListener('click', () => {
   marker.setLatLng([0, 0]);
   map.setView([0, 0], 13);
 });
-
