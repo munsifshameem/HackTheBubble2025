@@ -109,25 +109,18 @@ document.getElementById('stopBtn').addEventListener('click', async () => {
   const totalDistance = distance.toFixed(2);
   const totalTime = document.getElementById('timer').innerText.split(' ')[1];
 
-  try {
-    // Send distance to backend
-    const response = await fetch('http://127.0.0.1:5000/submit-journey', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ distance: parseFloat(totalDistance) })
-    });
-    const result = await response.json();
+  const score = distance / 100;
 
-    if (response.ok) {
-      document.getElementById('score').innerText = `Score: ${result.score.toFixed(2)}`;
-      alert(`Journey stopped.\nDistance: ${totalDistance} m\nTime: ${totalTime}\nScore: ${result.score.toFixed(2)}`);
-    } else {
-      alert('Error: ' + result.error);
-    }
-  } catch (err) {
-    console.error('Error sending data:', err);
-    alert('Could not connect to the backend.');
-  }
+  // Update score on screen if element exists
+  const scoreElement = document.getElementById('score');
+  if (scoreElement) scoreElement.innerText = `Score: ${score.toFixed(2)}`;
+
+  talert(
+    `Journey stopped.\n` +
+    `Distance: ${totalDistance} m\n` +
+    `Time: ${totalTime}\n` +
+    `Score: ${score.toFixed(2)}`
+  );
 
   // Reset for next journey
   distance = 0;
