@@ -7,6 +7,7 @@ let startTime = 0;
 let elapsedTime = 0;
 let timerInterval;
 
+// ---------------- Timer Functions ----------------
 function updateTimerDisplay() {
   const totalSeconds = Math.floor(elapsedTime / 1000);
   const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
@@ -27,16 +28,16 @@ function stopTimer() {
   clearInterval(timerInterval);
 }
 
-
-// Map setup
-const map = L.map('map').setView([56.3398, -2.7967], 13);
+// ---------------- Map Setup ----------------
+const map = L.map('map').setView([56.3398, -2.7967], 13); // St Andrews
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
 let polyline = L.polyline([], { color: '#2575fc', weight: 5 }).addTo(map);
-let marker = L.marker([0,0]).addTo(map);
+let marker = L.marker([56.3398, -2.7967]).addTo(map);
 
+// ---------------- Distance Calculation ----------------
 function toRad(deg) { return deg * Math.PI / 180; }
 
 function getDistance(lat1, lon1, lat2, lon2) {
@@ -53,13 +54,14 @@ function getDistance(lat1, lon1, lat2, lon2) {
   return R * c;
 }
 
+// ---------------- Map Update ----------------
 function updateMap(lat, lon) {
   polyline.addLatLng([lat, lon]);
   marker.setLatLng([lat, lon]);
   map.setView([lat, lon]);
 }
 
-// Start Journey
+// ---------------- Start Journey ----------------
 document.getElementById('startBtn').addEventListener('click', () => {
   if (!navigator.geolocation) {
     alert('Geolocation is not supported by your browser.');
@@ -71,6 +73,8 @@ document.getElementById('startBtn').addEventListener('click', () => {
     path = [];
     elapsedTime = 0;
     updateTimerDisplay();
+    document.getElementById('distance').innerText = `Distance: 0 m`;
+    document.getElementById('score').innerText = `Score: 0`;
   }
 
   startTimer();
@@ -92,41 +96,47 @@ document.getElementById('startBtn').addEventListener('click', () => {
     { enableHighAccuracy: true, maximumAge: 1000, timeout: 5000 }
   );
 });
-document.getElementById('stopBtn').addEventListener('click', () => {
+
+// ---------------- Stop Journey ----------------
+document.getElementById('stopBtn').addEventListener('click', async () => {
   if (watchId) {
     navigator.geolocation.clearWatch(watchId);
     watchId = null;
   }
 
-  // Stop any timer (if you have one)
   stopTimer();
 
-  // Show journey summary before reset
-  const elapsed = document.getElementById('timer')?.innerText.split(' ')[1] || '0s';
-  alert(`Journey stopped.\nTotal distance: ${distance.toFixed(2)} meters\nTime: ${elapsed}`);
+  const totalDistance = distance.toFixed(2);
+  const totalTime = document.getElementById('timer').innerText.split(' ')[1];
 
-  // Send distance to backend for points
-  fetch('http://127.0.0.1:5000/score', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ distance: distance })
-  })
-  .then(res => res.json())
-  .then(data => {
-    alert(`You earned ${data.points.toFixed(1)} points!`);
-  })
-  .catch(err => console.error(err));
+  try {
+    // Send distance to backend
+    const response = await fetch('http://127.0.0.1:5000/submit-journey', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ distance: parseFloat(totalDistance) })
+    });
+    const result = await response.json();
 
-  // Reset values for next journey
+    if (response.ok) {
+      document.getElementById('score').innerText = `Score: ${result.score.toFixed(2)}`;
+      alert(`Journey stopped.\nDistance: ${totalDistance} m\nTime: ${totalTime}\nScore: ${result.score.toFixed(2)}`);
+    } else {
+      alert('Error: ' + result.error);
+    }
+  } catch (err) {
+    console.error('Error sending data:', err);
+    alert('Could not connect to the backend.');
+  }
+
+  // Reset for next journey
   distance = 0;
   elapsedTime = 0;
   startTime = 0;
-  updateTimerDisplay?.(); // if you have a function to update timer display
+  updateTimerDisplay();
   document.getElementById('distance').innerText = `Distance: 0 m`;
-
-  // Clear path & map visuals
   path = [];
   polyline.setLatLngs([]);
-  marker.setLatLng([0, 0]);
-  map.setView([0, 0], 13);
+  marker.setLatLng([56.3398, -2.7967]);
+  map.setView([56.3398, -2.7967], 13);
 });
