@@ -96,10 +96,24 @@ document.getElementById('startBtn').addEventListener('click', () => {
 
 // Stop Journey
 document.getElementById('stopBtn').addEventListener('click', () => {
-  if (watchId) {
-    navigator.geolocation.clearWatch(watchId);
-    watchId = null;
-  }
-  stopTimer();
-  alert(`Journey stopped.\nTotal distance: ${distance.toFixed(2)} meters\nTime: ${document.getElementById('timer').innerText.split(' ')[1]}`);
+  navigator.geolocation.clearWatch(watchId);  // stop tracking
+
+  alert(`Journey stopped. Total distance: ${distance.toFixed(2)} meters.`);
+
+  // Send journey data to backend
+  fetch('http://localhost:5000/submit-journey', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ path, distance, time })
+  })
+  .then(response => response.json())
+  .then(data => {
+    alert(`Journey data submitted successfully! Total distance: ${distance.toFixed(2)} meters.`);
+  })
+  .catch(error => {
+    console.error('Error submitting journey data:', error);
+    alert('Failed to submit journey data.');
+  });
 });
