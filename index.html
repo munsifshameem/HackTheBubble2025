@@ -5,109 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Journey Tracker</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <style>
-    #map { height: 80vh; width: 100%; }
-    body { font-family: Arial, sans-serif; text-align: center; margin: 0; padding: 0; }
-    button { padding: 10px 20px; margin: 10px; font-size: 16px; }
-    #distance { font-size: 18px; margin: 10px; }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h1>Journey Tracker</h1>
-<button id="startBtn">Start Journey</button>
-<button id="stopBtn">Stop Journey</button>
-<div id="distance">Distance: 0 m</div>
-<div id="map"></div>
+<header>
+  <div class="header-content">
+    <h1>Journey Tracker</h1>
+    <p>Track your adventures live and see the distance traveled in real-time!</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <button id="startBtn" class="btn btn-start">Start Journey</button>
+    <button id="stopBtn" class="btn btn-stop">Stop Journey</button>
+  </div>
+
+  <div class="distance-card">
+    <span id="distance">Distance: 0 m</span>
+    <span id="timer">Time: 00:00:00</span>
+
+  </div>
+
+ 
+
+
+  <div id="map"></div>
+</main>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script>
-let watchId;
-let path = [];
-let distance = 0;
-
-const map = L.map('map').setView([0, 0], 13);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '&copy; OpenStreetMap contributors'
-}).addTo(map);
-
-let polyline = L.polyline([], { color: 'blue' }).addTo(map);
-let marker = L.marker([0,0]).addTo(map);
-
-function toRad(deg) { return deg * Math.PI / 180; }
-
-function getDistance(lat1, lon1, lat2, lon2) {
-  const R = 6371e3; // meters
-  const φ1 = toRad(lat1);
-  const φ2 = toRad(lat2);
-  const Δφ = toRad(lat2 - lat1);
-  const Δλ = toRad(lon2 - lon1);
-
-  const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
-            Math.cos(φ1) * Math.cos(φ2) *
-            Math.sin(Δλ/2) * Math.sin(Δλ/2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-
-  return R * c;
-}
-
-function updateMap(lat, lon) {
-  polyline.addLatLng([lat, lon]);
-  marker.setLatLng([lat, lon]);
-  map.setView([lat, lon]);
-}
-
-document.getElementById('startBtn').addEventListener('click', () => {
-  distance = 0;
-  path = [];
-  if (!navigator.geolocation) {
-    alert('Geolocation is not supported by your browser.');
-    return;
-  }
-
-  watchId = navigator.geolocation.watchPosition(
-    (position) => {
-      const { latitude, longitude } = position.coords;
-      path.push({ latitude, longitude });
-
-      if (path.length > 1) {
-        const last = path[path.length - 2];
-        distance += getDistance(last.latitude, last.longitude, latitude, longitude);
-      }
-
-      document.getElementById('distance').innerText = `Distance: ${distance.toFixed(2)} m`;
-      updateMap(latitude, longitude);
-    },
-    (err) => console.error(err),
-    { enableHighAccuracy: true, maximumAge: 1000, timeout: 5000 }
-  );
-});
-
-document.getElementById('stopBtn').addEventListener('click', () => {
-  navigator.geolocation.clearWatch(watchId);  // stop tracking
-
-  alert(`Journey stopped. Total distance: ${distance.toFixed(2)} meters.`);
-
-  // Send journey data to backend
-  fetch('http://localhost:5000/submit-journey', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ path, distance })
-  })
-  .then(response => response.json())
-  .then(data => {
-    alert(`Journey data submitted successfully! Total distance: ${distance.toFixed(2)} meters.`);
-  })
-  .catch(error => {
-    console.error('Error submitting journey data:', error);
-    alert('Failed to submit journey data.');
-  });
-});
-
-
-</script>
-
+<script src="script.js"></script>
 </body>
 </html>
