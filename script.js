@@ -74,7 +74,6 @@ document.getElementById('startBtn').addEventListener('click', () => {
     elapsedTime = 0;
     updateTimerDisplay();
     document.getElementById('distance').innerText = `Distance: 0 m`;
-    document.getElementById('score').innerText = `Score: 0`;
   }
 
   startTimer();
@@ -109,13 +108,14 @@ document.getElementById('stopBtn').addEventListener('click', async () => {
   const totalDistance = distance.toFixed(2);
   const totalTime = document.getElementById('timer').innerText.split(' ')[1];
 
+  // Calculate score, but don't display it
   const score = distance / 100;
 
-  // Update score on screen if element exists
-  const scoreElement = document.getElementById('score');
-  if (scoreElement) scoreElement.innerText = `Score: ${score.toFixed(2)}`;
+  // Log the score internally (or for future use, send to backend, etc.)
+  console.log(`Score: ${score.toFixed(2)}`);
 
-  talert(
+  // Show journey summary without score in UI
+  alert(
     `Journey stopped.\n` +
     `Distance: ${totalDistance} m\n` +
     `Time: ${totalTime}\n` +
