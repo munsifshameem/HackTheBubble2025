@@ -3,18 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Journey Tracker - Home</title>
+  <title>Home</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <nav class="navbar">
-  <div class="nav-left">
-    <h2 class="logo">Journey Tracker</h2>
-  </div>
+  <div class="logo">Journey Tracker</div>
   <ul class="nav-links">
     <li><a href="home.html" class="active">Home</a></li>
-    <li><a href="record.html">Record Journey</a></li>
+    <li><a href="index.html">Record Journey</a></li>
     <li><a href="shop.html">Shop</a></li>
   </ul>
 </nav>
@@ -22,17 +20,16 @@
 <header>
   <div class="header-content">
     <h1>Welcome Back!</h1>
-    <p>Go touch some grass</p>
+    <p>View your total score and start your next adventure.</p>
   </div>
 </header>
 
-<main style="text-align:center; padding: 50px;">
+<main style="text-align:center; padding:50px;">
   <h2>Your Total Score:</h2>
-  <p id="totalScore" style="font-size: 2rem; font-weight: bold; color: #2575fc;">0</p>
+  <p id="totalScore" style="font-size:2rem; font-weight:bold; color:#2575fc;">0</p>
 </main>
 
 <script>
-  // Load total score from localStorage (if stored later)
   const savedScore = localStorage.getItem('totalScore') || 0;
   document.getElementById('totalScore').textContent = savedScore;
 </script>

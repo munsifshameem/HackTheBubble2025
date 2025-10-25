@@ -1,4 +1,20 @@
-/* 🔹 Navigation Bar */
+/* ---------------- Reset & Base ---------------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', Arial, sans-serif;
+}
+
+body {
+  background: #f0f4f8;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ---------------- Navigation Bar ---------------- */
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -41,23 +57,7 @@
   border-color: #fff;
 }
 
-/* Reset & base */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Poppins', Arial, sans-serif;
-}
-
-body {
-  background: #f0f4f8;
-  color: #333;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-/* Header */
+/* ---------------- Header ---------------- */
 header {
   background: linear-gradient(135deg, #6a11cb, #2575fc);
   color: white;
@@ -77,19 +77,19 @@ header p {
   opacity: 0.85;
 }
 
-/* Main content */
+/* ---------------- Main ---------------- */
 main {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 70px 20px 20px 20px; /* more breathing room below header */
+  padding: 70px 20px 20px 20px;
   max-width: 1200px;
   margin: -40px auto 0 auto;
   width: 90%;
 }
 
-/* Buttons */
+/* ---------------- Buttons ---------------- */
 .controls {
   display: flex;
   gap: 20px;
@@ -127,8 +127,7 @@ main {
   box-shadow: 0 8px 20px rgba(0,0,0,0.2);
 }
 
-/* Distance + Timer Card */
-/* Distance + Timer Card */
+/* ---------------- Cards ---------------- */
 .distance-card {
   background: white;
   padding: 25px 50px;
@@ -141,25 +140,24 @@ main {
   text-align: center;
 }
 
-
 .distance-card:hover {
   transform: translateY(-4px);
 }
-/* Neon Timer */
+
 #timer {
   display: block;
   margin-top: 8px;
   font-size: 1.2rem;
   font-weight: 500;
-  color: #3b82f6; /* Modern blue accent */
+  color: #3b82f6;
   letter-spacing: 0.5px;
   text-shadow: 0 0 3px rgba(59,130,246,0.2);
 }
 
-/* Map */
+/* ---------------- Map ---------------- */
 #map {
-  width: 85%;       /* slightly smaller width */
-  height: 58vh;     /* slightly smaller height */
+  width: 85%;
+  height: 58vh;
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 8px 24px rgba(0,0,0,0.15);
@@ -169,7 +167,7 @@ main {
   transform: scale(1.01);
 }
 
-/* Responsive */
+/* ---------------- Responsive ---------------- */
 @media (max-width: 768px) {
   header h1 {
     font-size: 2.2rem;

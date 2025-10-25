@@ -3,33 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Journey Tracker</title>
+  <title>Record Journey</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- 🔹 Navigation Bar -->
+<!-- Navigation -->
 <nav class="navbar">
-  <div class="nav-left">
-    <h2 class="logo">Grass Touching Tracker</h2>
-  </div>
+  <div class="logo">Journey Tracker</div>
   <ul class="nav-links">
     <li><a href="home.html">Home</a></li>
-    <li><a href="record.html" class="active">Record Journey</a></li>
+    <li><a href="index.html" class="active">Record Journey</a></li>
     <li><a href="shop.html">Shop</a></li>
   </ul>
 </nav>
 
-<!-- 🔹 Header -->
 <header>
   <div class="header-content">
     <h1>Record Your Journey</h1>
-    <p>Go touch some grasss!</p>
+    <p>Track your adventures live and see the distance traveled in real-time!</p>
   </div>
 </header>
 
-<!-- 🔹 Main Content -->
 <main>
   <div class="controls">
     <button id="startBtn" class="btn btn-start">Start Journey</button>
@@ -37,9 +33,10 @@
   </div>
 
   <div class="distance-card">
-    <span id="distance">Distance: 0 m</span>
-    <br>
-    <span id="timer">Time: 00:00:00</span>
+    <span id="distance">Distance: 0 m</span><br>
+    <span id="timer">Time: 00:00:00</span><br>
+    <span id="score">Score: 0</span><br>
+    <span id="totalScoreDisplay">Total Score: 0</span>
   </div>
 
   <div id="map"></div>
