@@ -5,6 +5,32 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Journey Tracker - Home</title>
 <link rel="stylesheet" href="style.css" />
+<style>
+/* Garden seed images */
+.planted-seed-img {
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  transition: transform 0.2s;
+  width: 60px;
+  height: 60px;
+  margin: 5px;
+}
+
+.planted-seed-img:hover {
+  transform: scale(1.1);
+}
+
+/* Garden grid */
+#plantedSeeds {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 10px;
+  background-color: #4CAF50; /* green background */
+  border-radius: 12px;
+  min-height: 150px;
+}
+</style>
 </head>
 <body>
 
@@ -31,8 +57,8 @@
       <h3>Your Seeds</h3>
       <ul>
         <li>Sunflower: <span class="count">0</span> <button class="plant" data-seed="sunflower">Plant</button></li>
-        <li>Basil: <span class="count">0</span> <button class="plant" data-seed="basil">Plant</button></li>
-        <li>Olive: <span class="count">0</span> <button class="plant" data-seed="olive">Plant</button></li>
+        <li>Rose: <span class="count">0</span> <button class="plant" data-seed="rose">Plant</button></li>
+        <li>Cactus: <span class="count">0</span> <button class="plant" data-seed="cactus">Plant</button></li>
       </ul>
     </div>
     <div id="garden">
@@ -43,41 +69,57 @@
 </main>
 
 <script>
+// LocalStorage helpers
 function getInventory(){ return JSON.parse(localStorage.getItem('inventory')||'{}'); }
-function getTotalScore(){ return parseFloat(localStorage.getItem('totalScore'))||0; }
 function setInventory(inv){ localStorage.setItem('inventory', JSON.stringify(inv)); }
+function getTotalScore(){ return parseFloat(localStorage.getItem('totalScore'))||0; }
 function setTotalScore(val){ localStorage.setItem('totalScore', val.toFixed(2)); }
+function getPlantedSeeds(){ return JSON.parse(localStorage.getItem('plantedSeeds')||'[]'); }
+function setPlantedSeeds(arr){ localStorage.setItem('plantedSeeds', JSON.stringify(arr)); }
 
+// Update UI
 function updateInventoryUI(){
   const inv = getInventory();
   document.querySelectorAll('#inventory li').forEach(li=>{
     const seed = li.querySelector('.plant').dataset.seed;
     const qty = inv[seed]||0;
     li.querySelector('.count').textContent = qty;
-    li.querySelector('.plant').disabled = qty<=0;
+    li.querySelector('.plant').disabled = qty <= 0;
   });
   document.getElementById('totalScore').textContent = getTotalScore().toFixed(2);
+
+  // Render garden from stored seeds
+  const garden = document.getElementById('plantedSeeds');
+  garden.innerHTML = '';
+  getPlantedSeeds().forEach(seed=>{
+    const img = document.createElement('img');
+    img.src = `images/${seed}.png`; // images folder
+    img.alt = seed;
+    img.className = 'planted-seed-img';
+    garden.appendChild(img);
+  });
 }
 
+// Plant a seed
 function plantSeed(seedName){
   const inv = getInventory();
-  if((inv[seedName]||0)<=0) return;
-  inv[seedName]-=1;
+  if((inv[seedName]||0) <= 0) return;
+  inv[seedName] -= 1;
   setInventory(inv);
 
-  const div = document.createElement('div');
-  div.textContent = seedName;
-  div.className = 'planted-seed';
-  document.getElementById('plantedSeeds').appendChild(div);
+  const planted = getPlantedSeeds();
+  planted.push(seedName);
+  setPlantedSeeds(planted);
 
   updateInventoryUI();
 }
 
+// Attach event listeners
 document.querySelectorAll('#inventory .plant').forEach(btn=>{
   btn.addEventListener('click',()=>plantSeed(btn.dataset.seed));
 });
 
-// Initialize garden and inventory
+// Initialize UI
 updateInventoryUI();
 </script>
 
