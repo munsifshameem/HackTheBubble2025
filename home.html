@@ -5,9 +5,66 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Home</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* Simple styles for garden items */
+    #garden {
+      width: 90%;
+      height: 300px;
+      margin: 20px auto;
+      background: #a8e6cf; /* light green grass background */
+      position: relative;
+      border-radius: 15px;
+      overflow: hidden;
+    }
+    .grass {
+      position: absolute;
+      width: 3px;
+      background: #2ecc71;
+      bottom: 0;
+    }
+    .flower {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: pink;
+      border-radius: 50%;
+      bottom: 0;
+    }
+    .tree {
+      position: absolute;
+      width: 20px;
+      height: 50px;
+      background: #8b4513; /* tree trunk */
+      border-radius: 4px;
+      bottom: 0;
+    }
+    .tree::after {
+      content: '';
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      background: green;
+      border-radius: 50%;
+      left: -10px;
+      top: -30px;
+    }
+    .butterfly {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: purple;
+      border-radius: 50%;
+      animation: fly 4s infinite alternate;
+    }
+    @keyframes fly {
+      0% { transform: translateY(0) translateX(0); }
+      100% { transform: translateY(-50px) translateX(50px); }
+    }
+  </style>
 </head>
 <body>
 
+<!-- Navigation -->
 <nav class="navbar">
   <div class="logo">Journey Tracker</div>
   <ul class="nav-links">
@@ -17,6 +74,7 @@
   </ul>
 </nav>
 
+<!-- Header -->
 <header>
   <div class="header-content">
     <h1>Welcome Back!</h1>
@@ -24,14 +82,44 @@
   </div>
 </header>
 
-<main style="text-align:center; padding:50px;">
+<!-- Main content -->
+<main style="text-align:center; padding: 50px;">
   <h2>Your Total Score:</h2>
-  <p id="totalScore" style="font-size:2rem; font-weight:bold; color:#2575fc;">0</p>
+  <p id="totalScore" style="font-size: 2rem; font-weight: bold; color: #2575fc;">0</p>
+
+  <h2>My Garden:</h2>
+  <div id="garden">
+    <!-- Garden items will appear here -->
+  </div>
 </main>
 
+<!-- Scripts -->
+<script src="garden.js"></script>
 <script>
-  const savedScore = localStorage.getItem('totalScore') || 0;
-  document.getElementById('totalScore').textContent = savedScore;
+  // Update score function
+  const updateScore = () => {
+    const savedScore = localStorage.getItem('totalScore') || 0;
+    document.getElementById('totalScore').textContent = parseFloat(savedScore).toFixed(2);
+  };
+
+  // Update score when page loads
+  updateScore();
+
+  // Listen for changes in localStorage
+  window.addEventListener('storage', updateScore);
+
+  // Load user inventory from localStorage
+  let inventory = JSON.parse(localStorage.getItem('inventory' )) || {
+    grass: true,      // everyone starts with grass
+    flowers: 0,
+    trees: 0,
+    butterflies: 0
+  };
+
+  // Generate garden based on inventory
+  if (typeof generateGarden === 'function') {
+    generateGarden(inventory);
+  }
 </script>
 
 </body>
