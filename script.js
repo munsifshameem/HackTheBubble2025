@@ -1,6 +1,8 @@
 let watchId;
 let path = [];
 let distance = 0;
+const MIN_DISTANCE_THRESHOLD = 0.5; // Minimum distance in meters (50 cm) to count as valid movement
+const MAX_GPS_ACCURACY = 20; // Maximum acceptable GPS accuracy in meters
 
 // Timer variables
 let startTime = 0;
@@ -41,17 +43,17 @@ let marker = L.marker([56.3398, -2.7967]).addTo(map);
 function toRad(deg) { return deg * Math.PI / 180; }
 
 function getDistance(lat1, lon1, lat2, lon2) {
-  const R = 6371e3;
+  const R = 6371e3; // Earth radius in meters
   const φ1 = toRad(lat1);
   const φ2 = toRad(lat2);
   const Δφ = toRad(lat2 - lat1);
   const Δλ = toRad(lon2 - lon1);
 
-  const a = Math.sin(Δφ/2)**2 +
+  const a = Math.sin(Δφ / 2) ** 2 +
             Math.cos(φ1) * Math.cos(φ2) *
-            Math.sin(Δλ/2)**2;
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-  return R * c;
+            Math.sin(Δλ / 2) ** 2;
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c; // Returns distance in meters
 }
 
 // ---------------- Map Update ----------------
@@ -80,16 +82,29 @@ document.getElementById('startBtn').addEventListener('click', () => {
 
   watchId = navigator.geolocation.watchPosition(
     (position) => {
-      const { latitude, longitude } = position.coords;
-      path.push({ latitude, longitude });
+      const { latitude, longitude, accuracy } = position.coords;
 
-      if (path.length > 1) {
-        const last = path[path.length - 2];
-        distance += getDistance(last.latitude, last.longitude, latitude, longitude);
+      // Ignore if accuracy is too low
+      if (accuracy > MAX_GPS_ACCURACY) {
+        return;
       }
 
-      document.getElementById('distance').innerText = `Distance: ${distance.toFixed(2)} m`;
-      updateMap(latitude, longitude);
+      // If we have at least one position in path, calculate the distance only if movement exceeds threshold
+      if (path.length > 0) {
+        const last = path[path.length - 1];
+        const currentDistance = getDistance(last.latitude, last.longitude, latitude, longitude);
+
+        // Only update if the movement exceeds the minimum threshold (0.5 meters)
+        if (currentDistance >= MIN_DISTANCE_THRESHOLD) {
+          distance += currentDistance;
+          path.push({ latitude, longitude });
+          document.getElementById('distance').innerText = `Distance: ${distance.toFixed(2)} m`;
+          updateMap(latitude, longitude);
+        }
+      } else {
+        // First position, add it to the path
+        path.push({ latitude, longitude });
+      }
     },
     (err) => console.error(err),
     { enableHighAccuracy: true, maximumAge: 1000, timeout: 5000 }
