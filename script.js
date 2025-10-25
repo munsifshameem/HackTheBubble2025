@@ -27,8 +27,8 @@ function stopTimer() {
   clearInterval(timerInterval);
 }
 
-// Existing map setup
-const map = L.map('map').setView([0, 0], 13);
+// Map setup
+const map = L.map('map').setView([56.3398, -2.7967], 13);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
@@ -49,7 +49,6 @@ function getDistance(lat1, lon1, lat2, lon2) {
             Math.cos(φ1) * Math.cos(φ2) *
             Math.sin(Δλ/2)**2;
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-
   return R * c;
 }
 
@@ -66,7 +65,6 @@ document.getElementById('startBtn').addEventListener('click', () => {
     return;
   }
 
-  // Reset only if this is a new journey
   if (!watchId) {
     distance = 0;
     path = [];
@@ -100,6 +98,23 @@ document.getElementById('stopBtn').addEventListener('click', () => {
     navigator.geolocation.clearWatch(watchId);
     watchId = null;
   }
+
   stopTimer();
+
+  // Show summary before resetting
   alert(`Journey stopped.\nTotal distance: ${distance.toFixed(2)} meters\nTime: ${document.getElementById('timer').innerText.split(' ')[1]}`);
+
+  // Reset values
+  distance = 0;
+  elapsedTime = 0;
+  startTime = 0;
+  updateTimerDisplay();
+  document.getElementById('distance').innerText = `Distance: 0 m`;
+
+  // Clear path & map visuals
+  path = [];
+  polyline.setLatLngs([]);
+  marker.setLatLng([0, 0]);
+  map.setView([0, 0], 13);
 });
+

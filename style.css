@@ -34,25 +34,15 @@ header p {
   opacity: 0.85;
 }
 
-#timer {
-  display: block;
-  margin-top: 10px;
-  font-size: 1.2rem;
-  color: #555;
-  font-weight: 500;
-}
-
-
-
 /* Main content */
 main {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 60px 20px 20px 20px; /* increased top padding from 20px to 60px */
+  padding: 70px 20px 20px 20px; /* more breathing room below header */
   max-width: 1200px;
-  margin: -40px auto 0 auto; /* keep this for overlap effect */
+  margin: -40px auto 0 auto;
   width: 90%;
 }
 
@@ -94,34 +84,46 @@ main {
   box-shadow: 0 8px 20px rgba(0,0,0,0.2);
 }
 
-/* Distance Card */
+/* Distance + Timer Card */
+/* Distance + Timer Card */
 .distance-card {
   background: white;
-  padding: 20px 40px;
+  padding: 25px 50px;
   border-radius: 20px;
   font-size: 1.5rem;
   font-weight: 600;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-  margin-bottom: 20px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  margin-bottom: 25px;
   transition: transform 0.3s ease;
+  text-align: center;
 }
 
+
 .distance-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-4px);
+}
+/* Neon Timer */
+#timer {
+  display: block;
+  margin-top: 8px;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #3b82f6; /* Modern blue accent */
+  letter-spacing: 0.5px;
+  text-shadow: 0 0 3px rgba(59,130,246,0.2);
 }
 
 /* Map */
 #map {
-  width: 100%;
-  height: 70vh;
-  border-radius: 20px;
+  width: 85%;       /* slightly smaller width */
+  height: 58vh;     /* slightly smaller height */
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
   transition: all 0.3s ease;
 }
-
 #map:hover {
-  transform: scale(1.02);
+  transform: scale(1.01);
 }
 
 /* Responsive */
@@ -136,5 +138,9 @@ main {
   .distance-card {
     font-size: 1.2rem;
     padding: 15px 25px;
+  }
+  #map {
+    height: 55vh;
+    width: 95%;
   }
 }
