@@ -31,8 +31,17 @@
 </main>
 
 <script>
-  const savedScore = localStorage.getItem('totalScore') || 0;
-  document.getElementById('shopScore').textContent = savedScore;
+  // Update score initially
+  const updateScore = () => {
+    const savedScore = localStorage.getItem('totalScore') || 0;
+    document.getElementById('shopScore').textContent = parseFloat(savedScore).toFixed(2);
+  };
+
+  // Update score when page loads
+  updateScore();
+
+  // Listen for changes in localStorage
+  window.addEventListener('storage', updateScore);
 </script>
 
 </body>

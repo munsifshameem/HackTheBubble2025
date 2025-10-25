@@ -134,18 +134,17 @@ document.getElementById('stopBtn').addEventListener('click', async () => {
   const totalDistance = distance.toFixed(2);
   const totalTime = document.getElementById('timer').innerText.split(' ')[1];
 
-  // Calculate score, but don't display it
+  // Calculate and save score
   const score = distance / 100;
+  const updatedTotalScore = updateTotalScore(score);
 
-  // Log the score internally (or for future use, send to backend, etc.)
-  console.log(`Score: ${score.toFixed(2)}`);
-
-  // Show journey summary without score in UI
+  // Show journey summary with score in UI
   alert(
     `Journey stopped.\n` +
     `Distance: ${totalDistance} m\n` +
     `Time: ${totalTime}\n` +
-    `Score: ${score.toFixed(2)}`
+    `Score earned: ${score.toFixed(2)}\n` +
+    `Total Score: ${updatedTotalScore.toFixed(2)}`
   );
 
   // Reset for next journey
